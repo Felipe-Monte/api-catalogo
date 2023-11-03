@@ -10,7 +10,7 @@ app.use(express.json())
 app.get("/cards", async (request, response) => {
   try {
     const cards = await db('cards').select('*');
-    request.json(cards);
+    response.json(cards);
   } catch (error) {
     response.status(500).json({ error: 'Erro ao buscar os cartões.' });
   }
