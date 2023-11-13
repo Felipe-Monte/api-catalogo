@@ -27,6 +27,11 @@ class CardsController {
     }
   }
 
+  async upload(request, response){
+    const { imgUrl, title, code, price } = request.body
+    console.log(imgUrl, title, code, price )
+  } 
+
 }
 
 module.exports = CardsController

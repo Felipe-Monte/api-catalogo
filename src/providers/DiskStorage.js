@@ -9,7 +9,7 @@ class DiskStorage {
       path.resolve(uploadConfig.UPLOADS_FOLDER, file)
     )
 
-    return file
+    return file 
   }
 
   async deleteFile(file){
