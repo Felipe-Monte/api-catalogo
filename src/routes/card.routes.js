@@ -12,7 +12,7 @@ const upload = multer(uploadConfig.MULTER)
 cardsRoutes.post("/", cardsController.create)
 cardsRoutes.get("/", cardsController.index)
 
-cardsRoutes.post("/upload", upload.single("image"), cardsController.upload)
+cardsRoutes.post("/upload", upload.single("upload"), cardsController.upload)
 
 
 module.exports = cardsRoutes

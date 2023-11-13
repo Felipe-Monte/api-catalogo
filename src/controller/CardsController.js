@@ -6,12 +6,16 @@ class CardsController {
   async create(request, response) {
     const { imgUrl, title, code, price } = request.body
 
+    if(imgUrl === "" || imgUrl === null){
+      return response.json({ error: 'Coloque a imagem !' })
+    }
+
     if (!title || !code || !price) {
       return response.json({ error: 'Preencha os campos !' })
     }
 
     try {
-      await db('cards').insert({ imgUrl, title, code, price })
+      await db('cards').insert({ title, code, price })
       response.json({ message: 'Cartão adicionado com sucesso !' })
     } catch (error) {
       response.status(500).json({ error: 'Erro ao adicionar cartão' })
@@ -27,10 +31,14 @@ class CardsController {
     }
   }
 
-  async upload(request, response){
-    const { imgUrl, title, code, price } = request.body
-    console.log(imgUrl, title, code, price )
-  } 
+  async upload(request, response) {
+    const avatarFileName = request.file.filename
+
+    await db("cards").insert({ imgUrl: avatarFileName})
+
+    console.log(avatarFileName)
+    response.json()
+  }
 
 }
 
