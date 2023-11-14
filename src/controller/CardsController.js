@@ -35,6 +35,7 @@ class CardsController {
 
   async upload(request, response) {
     const avatarFileName = request.file.filename
+   
     const { title, code, price } = request.body
 
     const diskStorage = new DiskStorage()
