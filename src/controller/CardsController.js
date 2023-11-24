@@ -27,9 +27,9 @@ class CardsController {
   async index(request, response) {
     try {
       const cards = await db('cards').select('*');
-      response.json(cards);
+      return response.json(cards);
     } catch (error) {
-      response.status(500).json({ error: 'Erro ao buscar os cartões.' });
+      return response.status(500).json({ error: 'Erro ao buscar os cartões.' });
     }
   }
 
@@ -46,9 +46,29 @@ class CardsController {
 
     console.log(card)
 
-    response.json(card)
+    return response.json(card)
   }
 
+  async delete(request, response){
+    const { id } = request.params;
+    const diskStorage = new DiskStorage();
+
+    try {
+      const imagePath = await db("cards").where({ id }).select("imgUrl").first();
+
+      await db("cards").where({ id }).delete();
+
+      if (imagePath && imagePath.imgUrl) {
+        await diskStorage.deleteFile(imagePath.imgUrl);
+      }
+
+      return response.status(200).send();
+    } catch (error) {
+      console.error(error);
+      return response.status(500).json({ error: "Erro ao excluir o item." });
+    }
+
+  }
 }
 
 module.exports = CardsController

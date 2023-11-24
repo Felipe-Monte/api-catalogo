@@ -12,6 +12,8 @@ const upload = multer(uploadConfig.MULTER)
 cardsRoutes.post("/", cardsController.create)
 cardsRoutes.get("/", cardsController.index)
 
+cardsRoutes.delete("/:id", cardsController.delete)
+
 cardsRoutes.post("/upload", upload.single("upload"), cardsController.upload)
 
 
