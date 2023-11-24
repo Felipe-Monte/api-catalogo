@@ -50,13 +50,13 @@ class CardsController {
   }
 
   async delete(request, response){
-    const { id } = request.params;
+    const { code } = request.params;
     const diskStorage = new DiskStorage();
 
     try {
-      const imagePath = await db("cards").where({ id }).select("imgUrl").first();
+      const imagePath = await db("cards").where({ code }).select("imgUrl").first();
 
-      await db("cards").where({ id }).delete();
+      await db("cards").where({ code }).delete();
 
       if (imagePath && imagePath.imgUrl) {
         await diskStorage.deleteFile(imagePath.imgUrl);
