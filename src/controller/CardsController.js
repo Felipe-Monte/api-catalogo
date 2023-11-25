@@ -5,25 +5,6 @@ const db = knex(knexfile)
 const DiskStorage = require("../providers/DiskStorage")
 
 class CardsController {
-  async create(request, response) {
-    // const { imgUrl, title, code, price } = request.body
-
-    // if (imgUrl === "" || imgUrl === null) {
-    //   return response.json({ error: 'Coloque a imagem !' })
-    // }
-
-    // if (!title || !code || !price) {
-    //   return response.json({ error: 'Preencha os campos !' })
-    // }
-
-    // try {
-    //   await db('cards').insert({ title, code, price })
-    //   response.json({ message: 'Cartão adicionado com sucesso !' })
-    // } catch (error) {
-    //   response.status(500).json({ error: 'Erro ao adicionar cartão' })
-    // }
-  }
-
   async index(request, response) {
     try {
       const cards = await db('cards').select('*');
@@ -34,20 +15,36 @@ class CardsController {
   }
 
   async upload(request, response) {
-    const avatarFileName = request.file.filename
-   
-    const { title, code, price } = request.body
-
-    const diskStorage = new DiskStorage()
-
-    const filename = await diskStorage.saveFile(avatarFileName)
-
-    const card = await db("cards").insert({ imgUrl: filename, title, code, price })
-
-    console.log(card)
-
-    return response.json(card)
+    try {
+      // Validar campos obrigatórios
+      const { title, code, price } = request.body;
+      if (!title || !code || !price) {
+        return response.status(400).json({ error: 'Preencha todos os campos obrigatórios.' });
+      }
+  
+      // Verificar se o arquivo de imagem foi fornecido
+      if (!request.file) {
+        return response.status(400).json({ error: 'Envie uma imagem válida.' });
+      }
+  
+      const avatarFileName = request.file.filename;
+      const diskStorage = new DiskStorage();
+  
+      // Salvar a imagem no sistema de armazenamento
+      const filename = await diskStorage.saveFile(avatarFileName);
+  
+      // Inserir informações do cartão no banco de dados
+      const [newCardId] = await db("cards").insert({ imgUrl: filename, title, code, price });
+  
+      // Retornar as informações do novo cartão
+      const newCard = await db('cards').where('id', newCardId).first();
+      return response.json(newCard);
+    } catch (error) {
+      console.error(error);
+      return response.status(500).json({ error: 'Erro ao realizar o upload do cartão.' });
+    }
   }
+  
 
   async delete(request, response){
     const { code } = request.params;
