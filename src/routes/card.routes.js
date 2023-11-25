@@ -9,12 +9,10 @@ const cardsController = new CardsController()
 const cardsRoutes = Router()
 const upload = multer(uploadConfig.MULTER)
 
-cardsRoutes.post("/", cardsController.create)
+
+cardsRoutes.post("/upload", upload.single("upload"), cardsController.upload)
 cardsRoutes.get("/", cardsController.index)
 
 cardsRoutes.delete("/:code", cardsController.delete)
-
-cardsRoutes.post("/upload", upload.single("upload"), cardsController.upload)
-
 
 module.exports = cardsRoutes
